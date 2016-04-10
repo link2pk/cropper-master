@@ -20,7 +20,14 @@
 			margin-right: 5px;
 			margin-bottom: 10px;
 		}
-		.docs-cropped canvas{ max-width: 100%;}
+		
+		.docs-cropped canvas {
+			max-width: 100%;
+		}
+		
+		.modal-trigger1 {
+			max-width: 200px;
+		}
 	</style>
 </head>
 
@@ -29,29 +36,11 @@
 	<div class="container">
 		<h1 class="page-header">Cropper in a Bootstrap modal</h1>
 
-		<!-- Show the cropped image in modal -->
-		<div class="modal fade docs-cropped" id="getCroppedCanvasModal" aria-hidden="true" aria-labelledby="getCroppedCanvasTitle" role="dialog" tabindex="-1">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						<h4 class="modal-title" id="getCroppedCanvasTitle">Cropped</h4>
-					</div>
-					<div class="modal-body"></div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-						<a class="btn btn-primary" id="download" href="javascript:void(0);" download="cropped.jpg">Download</a>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- /.modal -->
-
 
 		<!-- Button trigger modal -->
-		<button type="button" class="btn btn-primary btn-lg" data-target="#modal" data-toggle="modal">
+		<div class="modal-trigger1" data-target="#modal" data-toggle="modal">
 			Launch demo modal
-		</button>
+		</div>
 
 		<!-- Modal -->
 		<div class="modal fade" id="modal" aria-labelledby="modalLabel" role="dialog" tabindex="-1">
@@ -63,7 +52,7 @@
 					</div>
 					<div class="modal-body">
 						<div>
-							<img id="image" src="../assets/img/picture.jpg" alt="Picture">
+							<img id="image1" src="../assets/img/picture.jpg" alt="Picture">
 						</div>
 						<div class="row">
 							<div class="col-md-9 docs-buttons">
@@ -175,8 +164,8 @@
               <span class="fa fa-refresh"></span>
 										</span>
 									</button>
-									<label class="btn btn-primary btn-upload" for="inputImage" title="Upload image file">
-										<input type="file" class="sr-only" id="inputImage" name="file" accept="image/*">
+									<label class="btn btn-primary btn-upload" for="inputImage1" title="Upload image file">
+										<input type="file" class="sr-only" id="inputImage1" name="file" accept="image/*">
 										<span class="docs-tooltip" data-toggle="tooltip" title="Import image with Blob URLs">
               <span class="fa fa-upload"></span>
 										</span>
@@ -206,23 +195,7 @@
 									</button>
 								</div>
 
-								<!-- Show the cropped image in modal -->
-								<div class="modal fade docs-cropped" id="getCroppedCanvasModal" aria-hidden="true" aria-labelledby="getCroppedCanvasTitle" role="dialog" tabindex="-1">
-									<div class="modal-dialog">
-										<div class="modal-content">
-											<div class="modal-header">
-												<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-												<h4 class="modal-title" id="getCroppedCanvasTitle">Cropped</h4>
-											</div>
-											<div class="modal-body"></div>
-											<div class="modal-footer">
-												<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-												<a class="btn btn-primary" id="download" href="javascript:void(0);" download="cropped.jpg">Download</a>
-											</div>
-										</div>
-									</div>
-								</div>
-								<!-- /.modal -->
+
 
 								<button type="button" class="btn btn-primary" data-method="getData" data-option data-target="#putData">
 									<span class="docs-tooltip" data-toggle="tooltip" title="$().cropper(&quot;getData&quot;)">
@@ -470,116 +443,126 @@
 	<script src="../dist/cropper.js"></script>
 	<script>
 		$(function () {
-			var $image = $('#image');
-			var cropBoxData;
-			var canvasData;
 
-			$('#modal').on('shown.bs.modal', function () {
-				$image.cropper({
-					autoCropArea: 0.5,
-					aspectRatio: 16 / 9,
-					built: function () {
-						$image.cropper('setCanvasData', canvasData);
-						$image.cropper('setCropBoxData', cropBoxData);
-					}
-				});
-			}).on('hidden.bs.modal', function () {
-				cropBoxData = $image.cropper('getCropBoxData');
-				canvasData = $image.cropper('getCanvasData');
-				$image.cropper('destroy');
+			$('.modal-trigger1').on('click', function () {
+				if ($(this).find('img').length) {
+					$image1.attr('src', $(this).find('img').attr('src'));
+				}
 			});
 
-			// Methods
-			$('.docs-buttons').on('click', '[data-method]', function () {
-				var $this = $(this);
-				var data = $this.data();
-				var $target;
-				var result;
 
-				if ($this.prop('disabled') || $this.hasClass('disabled')) {
-					return;
-				}
+			var $image1 = $('#image1');
+			/*var cropBoxData;
+			var canvasData;*/
 
-				if ($image.data('cropper') && data.method) {
-					data = $.extend({}, data); // Clone a new one
+			$('#modal').on('shown.bs.modal', function (event) {
+				var modal1 = $(this);
+				var trigger1 = $(event.relatedTarget);
 
-					if (typeof data.target !== 'undefined') {
-						$target = $(data.target);
+				$image1.cropper({
+					autoCropArea: 0.5,
+					aspectRatio: 16 / 9,
+					/*built: function () {
+						$image.cropper('setCanvasData', canvasData);
+						$image.cropper('setCropBoxData', cropBoxData);
+					}*/
+				});
 
-						if (typeof data.option === 'undefined') {
+				// Methods
+				$('.docs-buttons').on('click', '[data-method]', function () {
+					var $this = $(this);
+					var data = $this.data();
+					var $target;
+					var result;
+
+					if ($this.prop('disabled') || $this.hasClass('disabled')) {
+						return;
+					}
+
+					if ($image1.data('cropper') && data.method) {
+						data = $.extend({}, data); // Clone a new one
+
+						if (typeof data.target !== 'undefined') {
+							$target = $(data.target);
+
+							if (typeof data.option === 'undefined') {
+								try {
+									data.option = JSON.parse($target.val());
+								} catch (e) {
+									console.log(e.message);
+								}
+							}
+						}
+
+						result = $image1.cropper(data.method, data.option, data.secondOption);
+
+						switch (data.method) {
+						case 'scaleX':
+						case 'scaleY':
+							$(this).data('option', -data.option);
+							break;
+
+						case 'getCroppedCanvas':
+							if (result) {
+								//result.toDataURL('image/jpeg')
+								trigger1.html('<img src=' + result.toDataURL('image/jpeg') + ' />');
+								
+								modal1.modal('hide');
+							}
+
+							break;
+						}
+
+						if ($.isPlainObject(result) && $target) {
 							try {
-								data.option = JSON.parse($target.val());
+								$target.val(JSON.stringify(result));
 							} catch (e) {
 								console.log(e.message);
 							}
 						}
-					}
 
-					result = $image.cropper(data.method, data.option, data.secondOption);
-
-					switch (data.method) {
-					case 'scaleX':
-					case 'scaleY':
-						$(this).data('option', -data.option);
-						break;
-
-					case 'getCroppedCanvas':
-						if (result) {
-
-							// Bootstrap's Modal
-							$('#getCroppedCanvasModal').modal().find('.modal-body').html(result);
-
-							if (!$download.hasClass('disabled')) {
-								$download.attr('href', result.toDataURL('image/jpeg'));
-							}
-						}
-
-						break;
-					}
-
-					if ($.isPlainObject(result) && $target) {
-						try {
-							$target.val(JSON.stringify(result));
-						} catch (e) {
-							console.log(e.message);
-						}
-					}
-
-				}
-			});
-			// Import image
-			var $inputImage = $('#inputImage');
-			var URL = window.URL || window.webkitURL;
-			var blobURL;
-
-			if (URL) {
-				$inputImage.change(function () {
-					var files = this.files;
-					var file;
-
-					if (!$image.data('cropper')) {
-						return;
-					}
-
-					if (files && files.length) {
-						file = files[0];
-
-						if (/^image\/\w+$/.test(file.type)) {
-							blobURL = URL.createObjectURL(file);
-							$image.one('built.cropper', function () {
-
-								// Revoke when load complete
-								URL.revokeObjectURL(blobURL);
-							}).cropper('reset').cropper('replace', blobURL);
-							$inputImage.val('');
-						} else {
-							window.alert('Please choose an image file.');
-						}
 					}
 				});
-			} else {
-				$inputImage.prop('disabled', true).parent().addClass('disabled');
-			}
+				// Import image
+				var $inputImage = $('#inputImage1');
+				var URL = window.URL || window.webkitURL;
+				var blobURL;
+
+				if (URL) {
+					$inputImage.change(function () {
+						var files = this.files;
+						var file;
+
+						if (!$image1.data('cropper')) {
+							return;
+						}
+
+						if (files && files.length) {
+							file = files[0];
+
+							if (/^image\/\w+$/.test(file.type)) {
+								blobURL = URL.createObjectURL(file);
+								$image1.one('built.cropper', function () {
+
+									// Revoke when load complete
+									URL.revokeObjectURL(blobURL);
+								}).cropper('reset').cropper('replace', blobURL);
+								$inputImage.val('');
+							} else {
+								window.alert('Please choose an image file.');
+							}
+						}
+					});
+				} else {
+					$inputImage.prop('disabled', true).parent().addClass('disabled');
+				}
+			}).on('hidden.bs.modal', function () {
+				/*cropBoxData = $image.cropper('getCropBoxData');
+				canvasData = $image.cropper('getCanvasData');*/
+				$image1.cropper('destroy');
+			});
+
+
 		});
 	</script>
 </body>
